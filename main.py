@@ -5,7 +5,7 @@ author: Alexandra Brádlová
 email: alexandra.bradlova@gmail.com
 """
 
-#ZMENILA JSEM NEKTERA SLOVA NA UPPERCASE OPROTI PUVODNIMU TEXTU
+# Upravený text s některými slovy v UPPERCASE
 TEXTS = [
     '''
     Situated about 10 miles west of Kemmerer,
@@ -40,83 +40,80 @@ TEXTS = [
     '''
 ]
 
-#CAST KDE USERNAME A PASSWORD SOUHLASI S REGISTROVANYMI UZIVATELI / NEBO NE
+# Registrovaní uživatelé
 registered_users = [
-    {"user":"bob", "password":"123"},
-    {"user":"ann", "password":"pass123" },
-    {"user":"mike", "password":"password123"},
-    {"user":"liz", "password":"Pass123"},
-    ]
+    {"user": "bob", "password": "123"},
+    {"user": "ann", "password": "pass123"},
+    {"user": "mike", "password": "password123"},
+    {"user": "liz", "password": "Pass123"},
+]
 
-username = input("Enter you username:").lower()
+# Přihlášení uživatele
+username = input("Enter your username: ").lower()
 
 for user in registered_users:
     if user["user"] == username:
         password = input("Enter your password: ")
         if user["password"] == password:
             print(f"Welcome, {username.title()}!")
+            break
         else:
             print("Incorrect password. Exiting...")
-        break
+            quit()
 else:
     print("Username not registered, program will end..")
-
-
-#CAST 2 - vybrat si z dostupnych textů nebo akcí:
-'''Pokud uživatel vybere takové číslo textu, které není v zadání, program jej upozorní a skončí,pokud uživatel zadá jiný vstup než číslo, program jej rovněž upozorní a skončí.'''
-
-text_choice = input("Choose a text number - 1, 2 or 3:")
-#nelze jen za pouziti INT!!! protoze vystup input je vzdy string
-if not text_choice.isdigit():
-    print("Sorry.You must enter a number.")
     quit()
 
-text_index = int(text_choice) - 1  #ted teprve prevedu input na int a dodam aby bylo jasne ze cislo textu == index textu v TEXTS o 1 nižší
+# Výběr textu
+text_choice = input("Choose a text number - 1, 2 or 3: ")
+if not text_choice.isdigit():
+    print("Sorry. You must enter a number.")
+    quit()
+
+text_index = int(text_choice) - 1
 
 if 0 <= text_index < len(TEXTS):
-    #len je tady proto aby se nedalo zadat vyssi cislo nez je mozstvi cisel textu
     chosen_text = TEXTS[text_index]
     print("You asked for text:\n" + chosen_text + "\n")
 else:
     print("Incorrect choice of text. Shutting down.")
+    quit()
 
-#CAST 3 - analyzovat zvoleny text
-'''
- počet slov,
- počet slov začínajících velkým písmenem
- počet slov psaných velkými písmeny,
- počet slov psaných malými písmeny,
- počet čísel (ne cifer),
- sumu všech čísel (ne cifer) v textu.
-'''
-
+# Analýza textu
 special_characters = ".,!?;:-()\"'"
 
-clean_words = []
-
-for word in chosen_text.split():
-    word = word.strip(special_characters)
-    clean_words.append(word)
+clean_words = [word.strip(special_characters) for word in chosen_text.split()]
 
 words_total = len(clean_words)
-#title_words = [clean for clean in clean_words if clean.istitle()]
+title_words = [word for word in clean_words if word.istitle()]
 uppercase = [word for word in clean_words if word.isupper()]
 lowercase = [word for word in clean_words if word.islower()]
-numbers_as_text = [word for word in clean_words if word.isdigit()]
-numbers = 0
-for word in clean_words:
-    if word.isdigit():
-        numbers += 1
-sum_numbers = sum(int(word) for word in numbers_as_text)
+numbers = [int(word) for word in clean_words if word.isdigit()]
+sum_numbers = sum(numbers)
 
-# vypsat vypocty
-
-print("-" * 40) #oddelovac
+# Výpis analýzy
+oddelovac = "-" * 40
+print(oddelovac)
 print(f"Total words: {words_total}")
-#print(f"Titlecase words: {len(title_words)}")
+print(f"Titlecase words: {len(title_words)}")
 print(f"Words in uppercase: {len(uppercase)}")
 print(f"Words in lowercase: {len(lowercase)}")
-print(f"Amount of numbers written as text: {len(numbers_as_text)}")
-print(f"Amount of numbers: {numbers}")
+print(f"Amount of numbers: {len(numbers)}")
 print(f"Sum of numbers: {sum_numbers}")
-print("-" * 40) #oddelovac
+print(oddelovac)
+
+# Graf četnosti délek slov
+frequency = {}
+for word in clean_words:
+    length = len(word)
+    if length in frequency:
+        frequency[length] += 1
+    else:
+        frequency[length] = 1
+
+print("LEN  -   OCCURRENCES   -  COUNT")
+print(oddelovac)
+for length in sorted(frequency):
+    count = frequency[length] #ze sloupec count je stejne delky jako promenna frequency
+    print(f"{length:>3} | {'*' * count:<20} | {count}") #formatovani zapisu s jvezdickami stejne jako je len-occur-count radek
+print(oddelovac)
